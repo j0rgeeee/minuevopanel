@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Clientes - Astroup</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-main: #f4f6fa;
+      --bg-sidebar: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --accent-color: #3b82f6;
+      --accent-bg: #eff6ff;
+    }
+
+    body {
+      margin: 0;
+      background-color: #f8fafc; /* Fondo claro base */
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-main);
+    }
+
+    /* PANTALLA LOGIN ULTRA-MODERNA (LIGHT TECH) */
+    .login-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at top right, #eff6ff 0%, #f8fafc 100%);
+    }
+
+    /* Efectos de luces suaves de fondo (Glow sutil en modo claro) */
+    .login-wrapper::before {
+      content: "";
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(45deg, #dbeafe, #e0e7ff);
+      filter: blur(100px);
+      top: -10%;
+      left: 10%;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .login-wrapper::after {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(45deg, #fae8ff, #e0e7ff);
+      filter: blur(90px);
+      bottom: 5%;
+      right: 15%;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      border-radius: 24px;
+      padding: 48px 36px;
+      width: 100%;
+      max-width: 400px;
+      z-index: 10;
+      box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.05), 0 0 0 1px rgba(15, 23, 42, 0.01);
+    }
+
+    .login-card .logo-area img {
+      width: 130px;
+      margin-bottom: 24px;
+    }
+
+    .login-heading {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.025em;
+      margin-bottom: 6px;
+    }
+
+    .login-subheading {
+      font-size: 0.88rem;
+      color: #64748b;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    .input-group-custom {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      transition: all 0.2s ease;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .input-group-custom:focus-within {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12), inset 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .input-group-custom .form-control-custom {
+      background: transparent;
+      border: none;
+      padding: 14px 16px;
+      font-size: 0.95rem;
+      color: #0f172a;
+      width: 100%;
+    }
+
+    .input-group-custom .form-control-custom:focus {
+      outline: none;
+    }
+
+    .input-group-custom .form-control-custom::placeholder {
+      color: #94a3b8;
+    }
+
+    .input-group-custom .btn-toggle-pass {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 0 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: color 0.2s;
+    }
+
+    .input-group-custom .btn-toggle-pass:hover {
+      color: #475569;
+    }
+
+    .btn-submit-custom {
+      background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      width: 100%;
+      transition: all 0.2s ease;
+      margin-top: 16px;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    }
+
+    .btn-submit-custom:hover {
+      filter: brightness(1.05);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-submit-custom:disabled {
+      background: #e2e8f0;
+      color: #94a3b8;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    #error-msg {
+      font-size: 0.85rem;
+      background: #fef2f2;
+      color: #ef4444;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #fee2e2;
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    /* ESTILOS DEL DASHBOARD PRINCIPAL */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: row;
+      background-color: var(--bg-main);
+    }
+
+    .sidebar {
+      width: 260px;
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .logo-container { display: block; }
+    .logo { width: 140px; margin-bottom: 40px; padding-left: 10px; display: block; }
+
+    .sidebar-menu a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    .sidebar-menu a:hover { background-color: #f8fafc; }
+    .sidebar-menu a.active {
+      background-color: var(--accent-bg);
+      color: var(--accent-color);
+      font-weight: 600;
+      border-left: 4px solid var(--accent-color);
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    .sidebar-user {
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 15px;
+      text-align: center;
+      background-color: #ffffff;
+    }
+
+    .avatar-circle {
+      width: 45px;
+      height: 45px;
+      background-color: var(--accent-bg);
+      color: var(--accent-color);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin: 0 auto 10px auto;
+    }
+
+    .content {
+      flex: 1;
+      padding: 35px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    .card-custom {
+      background-color: #ffffff;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .welcome-card { display: flex; align-items: center; gap: 15px; }
+    .welcome-card h1 { font-size: 1.75rem; font-weight: 700; margin: 0; }
+    .welcome-card p { margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.9rem; }
+
+    .kpis-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px; }
+    .kpi-card { background-color: #ffffff; border-radius: 16px; border: 1px solid var(--border-color); padding: 20px; display: flex; align-items: center; gap: 15px; }
+    .kpi-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+    
+    .kpi-proyectos .kpi-icon { background-color: #eff6ff; color: #3b82f6; }
+    .kpi-tareas .kpi-icon { background-color: #f0fdf4; color: #22c55e; }
+    .kpi-tickets .kpi-icon { background-color: #fff7ed; color: #f97316; }
+    .kpi-documentos .kpi-icon { background-color: #faf5ff; color: #a855f7; }
+
+    .kpi-info p { margin: 0; font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+    .kpi-info h2 { margin: 2px 0; font-size: 1.6rem; font-weight: 700; }
+    .kpi-info span { font-size: 0.75rem; color: var(--text-muted); }
+
+    .section-title { display: flex; align-items: center; gap: 10px; font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; }
+    .custom-table { width: 100%; margin-bottom: 0; }
+    .custom-table th { font-weight: 500; color: var(--text-muted); font-size: 0.85rem; border-bottom: 1px solid var(--border-color); padding: 12px 8px; }
+    .custom-table td { padding: 16px 8px; vertical-align: middle; font-size: 0.95rem; border-bottom: 1px solid #f1f5f9; }
+
+    .badge-status { padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; border: 1px solid transparent; display: inline-block; }
+    .status-progreso { background-color: #fff7ed; color: #ea580c; border-color: #fed7aa; }
+    .status-revision { background-color: #fefce8; color: #a16207; border-color: #fef08a; }
+    .status-completado { background-color: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+    .status-defecto { background-color: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+
+    .empty-state { text-align: center; padding: 30px 0; color: var(--text-muted); font-size: 0.95rem; }
+    .empty-icon { font-size: 2rem; color: #94a3b8; margin-bottom: 8px; background-color: #f8fafc; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: 0 auto 12px auto; }
+
+    /* RESPONSIVE MEDIA QUERIES */
+    @media (max-width: 991.98px) {
+      .layout { flex-direction: column; }
+      .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-color); padding: 15px 20px; display: block; }
+      .logo-container { display: flex; justify-content: center; width: 100%; }
+      .logo { margin-bottom: 0; padding-left: 0; }
+      
+      .sidebar-menu {
+        position: fixed; bottom: 0; left: 0; width: 100%; background-color: var(--bg-sidebar);
+        border-top: 1px solid var(--border-color); display: flex; justify-content: space-around;
+        align-items: center; padding: 10px 0; margin: 0; z-index: 1050; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      }
+      .sidebar-menu a { margin-bottom: 0; padding: 8px; flex-direction: column; gap: 4px; font-size: 0.75rem; flex: 1; text-align: center; border-radius: 0; }
+      .sidebar-menu a.active { border-left: none; border-bottom: 3px solid var(--accent-color); background-color: transparent; }
+      .sidebar-menu a i { font-size: 1.25rem; }
+      .sidebar-user { display: none; }
+      .content { padding: 20px; padding-bottom: 80px; }
+      .kpis-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    }
+
+    @media (max-width: 575.98px) {
+      .sidebar-menu a span { display: none; }
+      .sidebar-menu a i { font-size: 1.4rem; }
+      .kpis-grid { grid-template-columns: 1fr; }
+      .welcome-card { flex-direction: column; text-align: center; padding: 20px; }
+      .table-responsive-sm { display: block; width: 100%; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="root-view" class="login-wrapper">
+  <div class="login-card text-center">
+    <div class="logo-area">
+      <img src="https://go.astroup.store/assets/astroup-logo-CqTw9D0p.png" alt="Astroup">
+    </div>
+    
+    <div class="login-heading">Portal de Clientes</div>
+    <div class="login-subheading">Ingresa la clave asignada a tu cuenta para administrar tus proyectos.</div>
+    
+    <div id="error-msg" style="display:none;"></div>
+
+    <div class="mb-3">
+      <div class="input-group-custom">
+        <input type="password" id="passInput" class="form-control-custom" placeholder="••••••••" onkeypress="evaluarTecla(event)">
+        <button class="btn-toggle-pass" type="button" onclick="togglePasswordVisibility()">
+          <i id="toggleIcon" class="bi bi-eye"></i>
+        </button>
+      </div>
+    </div>
+    
+    <button class="btn-submit-custom" id="loginBtn" onclick="procesarLogin()">
+      Acceder <i class="bi bi-chevron-right ms-1" style="font-size: 0.85rem;"></i>
+    </button>
+  </div>
+</div>
+
+<script>
+const urlParams = new URLSearchParams(window.location.search);
+const clienteId = urlParams.get('cliente') || "";
+
+// !!! REEMPLAZA ESTO CON TU URL DE GOOGLE APPS SCRIPT !!!
+const urlGoogleApp = "https://script.google.com/macros/s/AKfycbwlJJeyJk2mLONxfPBi45_mpM4NKnoG9Ozk0L-STULgqzvFvNweAiDD6ozrqUladfESrg/exec";
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (!clienteId) return;
+
+  const savedPassword = localStorage.getItem(`astroup_pass_${clienteId}`);
+  if (savedPassword) {
+    ejecutarPeticionLogin(savedPassword, true);
+  }
+});
+
+function togglePasswordVisibility() {
+  const input = document.getElementById("passInput");
+  const icon = document.getElementById("toggleIcon");
+  if (input.type === "password") {
+    input.type = "text";
+    icon.className = "bi bi-eye-slash";
+  } else {
+    input.type = "password";
+    icon.className = "bi bi-eye";
+  }
+}
+
+function evaluarTecla(e) {
+  if (e.key === 'Enter') procesarLogin();
+}
+
+function procesarLogin() {
+  const password = document.getElementById("passInput").value;
+  if(!password) {
+    mostrarError("Por favor, escribe tu contraseña.");
+    return;
+  }
+  ejecutarPeticionLogin(password, false);
+}
+
+function ejecutarPeticionLogin(password, esAutoLogin) {
+  const errorDiv = document.getElementById("error-msg");
+  const btn = document.getElementById("loginBtn");
+
+  if (!esAutoLogin && btn) {
+    errorDiv.style.display = "none";
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> Validando clave...`;
+  } else if (esAutoLogin) {
+    const input = document.getElementById("passInput");
+    if(input) { input.disabled = true; input.value = "••••••••••••"; }
+    if(btn) { btn.disabled = true; btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> Sincronizando...`; }
+  }
+
+  fetch(urlGoogleApp, {
+    method: "POST",
+    mode: "cors",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ clienteId: clienteId, password: password })
+  })
+  .then(res => res.json())
+  .then(respuesta => {
+    if (respuesta.exito) {
+      localStorage.setItem(`astroup_pass_${clienteId}`, password);
+      construirDashboardCompleto(respuesta.datos);
+    } else {
+      localStorage.removeItem(`astroup_pass_${clienteId}`);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = `Acceder <i class="bi bi-chevron-right ms-1" style="font-size: 0.85rem;"></i>`;
+      }
+      const input = document.getElementById("passInput");
+      if(input) { input.disabled = false; input.value = ""; }
+      mostrarError(respuesta.mensaje || "La clave es incorrecta.");
+    }
+  })
+  .catch(err => {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `Acceder <i class="bi bi-chevron-right ms-1" style="font-size: 0.85rem;"></i>`;
+    }
+    const input = document.getElementById("passInput");
+    if(input) { input.disabled = false; }
+    mostrarError("Error en la red. Inténtalo de nuevo.");
+    console.error(err);
+  });
+}
+
+function mostrarError(msg) {
+  const errorDiv = document.getElementById("error-msg");
+  if(errorDiv) {
+    errorDiv.innerText = msg;
+    errorDiv.style.display = "block";
+  }
+}
+
+function obtenerClaseEstado(estado) {
+  if (!estado) return 'status-defecto';
+  const est = estado.trim().toLowerCase();
+  if (est === 'en progreso') return 'status-progreso';
+  if (est === 'en revisión' || est === 'en revision' || est === 'revision') return 'status-revision';
+  if (est === 'completado' || est === 'finalizado' || est === 'terminado') return 'status-completado';
+  return 'status-defecto';
+}
+
+function construirDashboardCompleto(data) {
+  const nombre = data.cliente ? data.cliente[1] : "Cliente";
+  const iniciales = nombre.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
+
+  const root = document.getElementById("root-view");
+  root.className = "layout";
+  root.style.background = "none";
+  
+  root.innerHTML = `
+    <div class="sidebar">
+      <div class="sidebar-top">
+        <div class="logo-container">
+          <img class="logo" src="https://go.astroup.store/assets/astroup-logo-CqTw9D0p.png" alt="Astroup">
+        </div>
+        <nav class="sidebar-menu">
+          <a href="#" class="active"><i class="bi bi-house-door"></i> <span>Dashboard</span></a>
+          <a href="#"><i class="bi bi-folder"></i> <span>Proyectos</span></a>
+          <a href="#"><i class="bi bi-clipboard-check"></i> <span>Tareas</span></a>
+          <a href="#"><i class="bi bi-chat-square-dots"></i> <span>Tickets</span></a>
+          <a href="#"><i class="bi bi-file-earmark-text"></i> <span>Documentos</span></a>
+        </nav>
+      </div>
+      <div class="sidebar-user">
+        <div class="avatar-circle">${iniciales}</div>
+        <div class="fw-bold text-truncate" style="font-size: 0.9rem;">${nombre}</div>
+        <div style="font-size: 0.8rem;" class="text-muted">Cliente</div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="card-custom welcome-card">
+        <div style="font-size: 2.5rem;">👋</div>
+        <div>
+          <h1>Bienvenido, ${nombre}</h1>
+          <p>Portal de clientes Astroup</p>
+        </div>
+      </div>
+
+      <div class="kpis-grid">
+        <div class="kpi-card kpi-proyectos">
+          <div class="kpi-icon"><i class="bi bi-folder"></i></div>
+          <div class="kpi-info"><p>Proyectos</p><h2>${data.proyectos ? data.proyectos.length : 0}</h2><span>En curso</span></div>
+        </div>
+        <div class="kpi-card kpi-tareas">
+          <div class="kpi-icon"><i class="bi bi-clipboard-check"></i></div>
+          <div class="kpi-info"><p>Tareas</p><h2>${data.tareas ? data.tareas.length : 0}</h2><span>Pendientes</span></div>
+        </div>
+        <div class="kpi-card kpi-tickets">
+          <div class="kpi-icon"><i class="bi bi-chat-square-dots"></i></div>
+          <div class="kpi-info"><p>Tickets</p><h2>${data.tickets ? data.tickets.length : 0}</h2><span>Abiertos</span></div>
+        </div>
+        <div class="kpi-card kpi-documentos">
+          <div class="kpi-icon"><i class="bi bi-file-earmark-text"></i></div>
+          <div class="kpi-info"><p>Documentos</p><h2>${data.documentos ? data.documentos.length : 0}</h2><span>Disponibles</span></div>
+        </div>
+      </div>
+
+      <div class="card-custom">
+        <div class="section-title"><i class="bi bi-folder text-primary"></i> Proyectos</div>
+        ${generarTablaProyectos(data.proyectos)}
+      </div>
+
+      <div class="card-custom">
+        <div class="section-title"><i class="bi bi-chat-square-dots" style="color: #f97316;"></i> Tickets</div>
+        ${generarTablaTickets(data.tickets)}
+      </div>
+
+      <div class="card-custom">
+        <div class="section-title"><i class="bi bi-file-earmark-text" style="color: #a855f7;"></i> Documentos</div>
+        ${generarTablaDocumentos(data.documentos)}
+      </div>
+    </div>
+  `;
+}
+
+function generarTablaProyectos(proyectos) {
+  if (!proyectos || proyectos.length === 0) {
+    return `<div class="empty-state"><div class="empty-icon"><i class="bi bi-folder-x"></i></div>No hay proyectos en curso.</div>`;
+  }
+  let h = `<div class="table-responsive-sm"><table class="table custom-table"><thead><tr><th>Proyecto</th><th>Estado</th></tr></thead><tbody>`;
+  proyectos.forEach(p => {
+    h += `<tr><td class="fw-bold text-primary">● &nbsp; ${p[2]}</td><td><span class="badge-status ${obtenerClaseEstado(p[3])}">${p[3]}</span></td></tr>`;
+  });
+  return h + `</tbody></table></div>`;
+}
+
+function generarTablaTickets(tickets) {
+  if (!tickets || tickets.length === 0) {
+    return `<div class="empty-state"><div class="empty-icon"><i class="bi bi-inbox"></i></div>No hay tickets abiertos.</div>`;
+  }
+  let h = `<div class="table-responsive-sm"><table class="table custom-table"><thead><tr><th>Ticket</th><th>Estado</th></tr></thead><tbody>`;
+  tickets.forEach(t => {
+    h += `<tr><td class="fw-bold">${t[2]}</td><td><span class="badge-status ${obtenerClaseEstado(t[3])}">${t[3]}</span></td></tr>`;
+  });
+  return h + `</tbody></table></div>`;
+}
+
+function generarTablaDocumentos(documentos) {
+  if (!documentos || documentos.length === 0) {
+    return `<div class="empty-state"><div class="empty-icon"><i class="bi bi-file-earmark"></i></div>No hay documentos disponibles.</div>`;
+  }
+  let h = `<div class="table-responsive-sm"><table class="table custom-table"><thead><tr><th>Nombre del Documento</th><th class="text-end">Acción</th></tr></thead><tbody>`;
+  documentos.forEach(d => {
+    const nombreDoc = d[3] ? d[3].toString().trim() : 'Documento adjunto';
+    const urlDoc = d[2] ? d[2].toString().trim() : '#';
+
+    h += `<tr>
+            <td><i class="bi bi-file-earmark-pdf text-danger me-2"></i> ${nombreDoc}</td>
+            <td class="text-end">
+              <a href="${urlDoc}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                <i class="bi bi-box-arrow-up-right me-1"></i> Abrir
+              </a>
+            </td>
+          </tr>`;
+  });
+  return h + `</tbody></table></div>`;
+}
+</script>
+
+</body>
+</html>
