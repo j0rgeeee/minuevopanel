@@ -1648,7 +1648,7 @@
 
             let endpointUrl = `https://www.googleapis.com/blogger/v3/blogs/${DB.config.blogId}/posts/`;
             if(estadoDePublicacion === 'draft') {
-                endpointUrl += `?isDraft=true`;
+                endpointUrl += `?isDraft=false`;
             }
 
             fetch(endpointUrl, {
