@@ -1209,26 +1209,65 @@
                 }
             });
         }
+function subirArticuloABlogger(accessToken) {
+    const activeBlogId = '1205081332135096231';
+    const titulo = document.getElementById('articulo-titulo').value.trim() || 'Sin título';
+    let html = quill.getSemanticHTML();
 
-        function subirArticuloABlogger(accessToken) {
-            const activeBlogId = DB.config.blogId;
-            const titulo = document.getElementById('articulo-titulo').value.trim() || 'Sin título';
-            let html = quill.getSemanticHTML();
+    const imgUrl = document.getElementById('blogger-imagen').value.trim();
+    if(imgUrl) html = `<img src="${imgUrl}" style="width:100%; max-height:450px; object-fit:cover; border-radius:4px;" /><br><br>` + html;
 
-            const imgUrl = document.getElementById('blogger-imagen').value.trim();
-            if(imgUrl) html = `<img src="${imgUrl}" style="width:100%; max-height:450px; object-fit:cover; border-radius:4px;" /><br><br>` + html;
+    const tags = document.getElementById('blogger-etiquetas').value.split(',').map(t => t.trim()).filter(t => t.length > 0);
+    const estado = document.getElementById('blogger-estado').value;
 
-            const tags = document.getElementById('blogger-etiquetas').value.split(',').map(t => t.trim()).filter(t => t.length > 0);
-            const estado = document.getElementById('blogger-estado').value;
+    const payload = {
+        kind: "blogger#post",
+        blog: { id: activeBlogId },
+        title: titulo,
+        content: html,
+        labels: tags
+    };
 
-            const payload = {
-                kind: "blogger#post",
-                blog: { id: activeBlogId },
-                title: titulo,
-                content: html,
-                labels: tags
-            };
+    let esDraftUrlParam = estado === 'draft' ? 'true' : 'false';
+    if(estado === 'schedule' && document.getElementById('blogger-fecha').value) {
+        payload.published = new Date(document.getElementById('blogger-fecha').value).toISOString();
+    }
 
+    // CORRECCIÓN: Quitamos la barra '/' final de 'posts'
+    let url = `https://www.googleapis.com/blogger/v3/blogs/${activeBlogId}/posts`;
+    let metodo = 'POST';
+
+    if(idBloggerReal) {
+        // Si editamos, agregamos la barra '/' y el ID del post
+        url += '/' + idBloggerReal;
+        metodo = 'PUT';
+    } else {
+        // Si es nuevo, agregamos el parámetro sin barra diagonal previa
+        url += `?isDraft=${esDraftUrlParam}`;
+    }
+
+    fetch(url, {
+        method: metodo,
+        headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(res => {
+        if (!res.ok) {
+            // Esto te ayudará a ver en la consola exactamente qué error devuelve Google si algo falla
+            return res.json().then(err => { throw new Error(JSON.stringify(err)) });
+        }
+        return res.json();
+    })
+    .then(data => {
+        idBloggerReal = data.id;
+        guardarArticuloActual();
+        mostrarToast('Publicado con éxito.', 'exito');
+    })
+    .catch((error) => {
+        console.error("Error al publicar:", error);
+        mostrarToast('Fallo en publicación web.', 'error');
+    });
+}
             let esDraftUrlParam = estado === 'draft' ? 'true' : 'false';
             if(estado === 'schedule' && document.getElementById('blogger-fecha').value) {
                 payload.published = new Date(document.getElementById('blogger-fecha').value).toISOString();
