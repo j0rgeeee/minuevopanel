@@ -3,1330 +3,769 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstroUp Publisher - Economía Liberal</title>
-    <link rel="icon" type="image/x-icon" href="https://i.ibb.co/VWg197Mr/FAVICON.jpg">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Creador y Editor de Artículos - Blogger</title>
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
-
     <style>
-        /* ==========================================================================
-           VARIABLES DE DISEÑO (Estética Fiel al Portal Astroup)
-           ========================================================================== */
         :root {
-            --bg-main: #f8f8f8;         /* Fondo crema cálido súper premium */
-            --bg-sidebar: #313131;      /* Antracita/Negro elegante */
-            --bg-panel: #ffffff;
-            --text-main: #1c1c1c;       /* Negro de contraste suave */
-            --text-muted: #6e6e6e;      /* Gris editorial */
-            --border-color: #e5e3dd;    /* Tono arena/beige premium para bordes */
-            --accent-color: #1c1c1c;
-            --accent-bg: #f1efe9;       /* Fondo de botones secundarios */
-            --accent-hover: #e5e3dd;
-            
-            /* Estados sutiles */
-            --exito: #2e7d32;
-            --peligro: #c62828;
-            --primario: #1c1c1c;        /* Botón de acción principal monocromático */
-            --primario-hover: #3a3a3a;
-            
-            --font-title: 'Playfair Display', serif;
-            --font-ui: 'Plus Jakarta Sans', sans-serif;
-            --radio: 6px;               /* Bordes minimalistas y rectos */
-            --transicion: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        [data-theme="dark"] {
-            --bg-main: #121212;
-            --bg-sidebar: #0a0a0a;
-            --bg-panel: #1a1a1a;
-            --text-main: #f5f5f5;
-            --text-muted: #9e9e9e;
-            --border-color: #333333;
-            --accent-bg: #2a2a2a;
-            --accent-hover: #333333;
-            --primario: #f5f5f5;
-            --primario-hover: #e0e0e0;
-        }
-
-        /* ==========================================================================
-           ESTILOS GENERALES
-           ========================================================================== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+            --primary: #ff5722;
+            --primary-hover: #e64a19;
+            --background: #f5f7fb;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --border: #cccccc;
+            --sidebar-width: 280px;
         }
 
         body {
-            font-family: var(--font-ui);
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        input, textarea, select, button {
-            font-family: var(--font-ui);
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-
-        /* ==========================================================================
-           BOTONES (Estilo Astroup Premium)
-           ========================================================================== */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px 20px;
-            font-size: 13px;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
-            border-radius: var(--radio);
-            border: 1px solid var(--border-color);
-            background-color: var(--accent-bg);
-            color: var(--text-main);
-            cursor: pointer;
-            transition: var(--transicion);
-        }
-
-        .btn:hover {
-            background-color: var(--accent-hover);
-            border-color: var(--text-muted);
-        }
-
-        .btn-primario {
-            background-color: var(--primario);
-            color: var(--bg-panel);
-            border-color: var(--primario);
-        }
-
-        .btn-primario:hover {
-            background-color: var(--primario-hover);
-            border-color: var(--primario-hover);
-            color: var(--bg-panel);
-        }
-
-        .btn-sidebar-publicar {
-            width: 100%;
-            background-color: #ffffff;
-            color: #1e1e1e;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-weight: 600;
-        }
-
-        .btn-sidebar-publicar:hover {
-            background-color: #f1efe9;
-            color: #1c1c1c;
-        }
-
-        .btn-sidebar-volver {
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.08);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            font-weight: 600;
-        }
-
-        .btn-sidebar-volver:hover {
-            background-color: rgba(255, 255, 255, 0.18);
-        }
-
-        .btn-exito {
-            border-color: var(--border-color);
-            background-color: transparent;
-            color: var(--exito);
-        }
-        .btn-exito:hover {
-            background-color: rgba(46, 125, 50, 0.08);
-            border-color: var(--exito);
-        }
-
-        .btn-peligro {
-            background-color: transparent;
-            color: var(--peligro);
-            border-color: var(--border-color);
-        }
-
-        .btn-peligro:hover {
-            background-color: rgba(198, 40, 40, 0.08);
-            border-color: var(--peligro);
-        }
-
-        .btn-icono {
-            width: 42px;
-            height: 42px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
             padding: 0;
-            background-color: transparent;
-            border-color: var(--border-color);
-        }
-
-        .btn-icono-oscuro {
-            width: 42px;
-            height: 42px;
-            padding: 0;
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
-
-        .btn-icono-oscuro:hover {
-            background-color: rgba(255, 255, 255, 0.12);
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        /* ==========================================================================
-           ESTRUCTURA DE COLUMNAS (Sin barra superior)
-           ========================================================================== */
-        .contenedor-principal {
             display: flex;
-            flex: 1;
             height: 100vh;
             overflow: hidden;
-            position: relative;
         }
 
-        /* Menú Lateral Premium */
-        .menu-lateral {
-            width: 270px;
-            background-color: var(--bg-sidebar);
-            padding: 40px 24px;
+        /* --- BARRA LATERAL IZQUIERDA --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: #1e2229;
+            color: #ecf0f1;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            overflow-y: auto;
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid #2c3e50;
+            flex-shrink: 0;
         }
 
-        /* Cabecera del Sidebar con Logo únicamente flotante */
         .sidebar-header {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #16191f;
+            border-bottom: 1px solid #2c3e50;
         }
 
-        .logo-container-astroup {
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--primary);
         }
 
-        .logo-container-astroup img {
-            height: 100%;
-            object-fit: contain;
-            filter: brightness(0) invert(1); /* Mantiene el logo en blanco puro para fondo oscuro */
+        .sidebar-header p {
+            margin: 5px 0 0 0;
+            font-size: 12px;
+            color: #bdc3c7;
         }
 
-        .nav-grupo {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            width: 100%;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 18px;
-            color: #a3a3a3;
-            font-size: 13.5px;
-            font-weight: 500;
-            text-decoration: none;
-            border-radius: var(--radio);
-            cursor: pointer;
-            transition: var(--transicion);
-        }
-
-        .nav-item:hover {
-            color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.04);
-        }
-
-        /* Cambiado a un fondo gris más claro al estar activo */
-        .nav-item.activo {
-            background-color: rgba(255, 255, 255, 0.15); /* Gris más clarito sutil */
-            color: #ffffff;
-            font-weight: 600;
-        }
-
-        /* Controles inferiores del Sidebar */
-        .sidebar-footer {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: auto;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Fila para publicar en web y volver atrás (Ahora en columna de forma vertical) */
-        .footer-fila-botones {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .footer-acciones-iconos {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        /* Zona Central (Editor/Listas) */
-        .zona-central {
+        .articles-list {
             flex: 1;
-            background-color: var(--bg-panel);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border-right: 1px solid var(--border-color);
-        }
-
-        .vista-seccion {
-            display: none;
-            width: 100%;
-            height: 100%;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .vista-seccion.activa {
-            display: flex;
-        }
-
-        /* Editor */
-        .editor-cabecera {
-            padding: 45px 50px 20px 50px;
-            background-color: var(--bg-panel);
-        }
-
-        .input-titulo {
-            width: 100%;
-            border: none;
-            outline: none;
-            font-family: var(--font-title);
-            font-size: 38px;
-            font-weight: 500;
-            color: var(--text-main);
-            background: transparent;
-            letter-spacing: -0.02em;
-        }
-
-        .input-titulo::placeholder {
-            color: var(--text-muted);
-            opacity: 0.3;
-            font-style: italic;
-        }
-
-        .editor-contenedor {
-            flex: 1;
-            padding: 0 50px 50px 50px;
             overflow-y: auto;
-            display: flex;
-            flex-direction: column;
+            padding: 10px;
         }
 
-        /* Quill Editor Estilo Premium */
+        .article-item {
+            padding: 12px;
+            background: #2c3e50;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            font-size: 14px;
+            border-left: 4px solid transparent;
+        }
+
+        .article-item:hover {
+            background: #34495e;
+            transform: translateX(2px);
+        }
+
+        .article-item.active {
+            border-left-color: var(--primary);
+            background: #34495e;
+        }
+
+        .article-item-title {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .article-item-tags {
+            font-size: 11px;
+            color: #aeb6bf;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-refresh-sidebar {
+            background: none;
+            border: 1px solid #455a64;
+            color: #ecf0f1;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-refresh-sidebar:hover {
+            background: #2c3e50;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL (DERECHA) --- */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            align-self: flex-start;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 24px;
+            border-bottom: 2px solid var(--background);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-mode {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        .badge-mode.edit {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Editor Quill */
+        .editor-wrapper {
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            background: #fff;
+        }
+
         .ql-toolbar.ql-snow {
             border: none !important;
-            border-bottom: 1px solid var(--border-color) !important;
-            padding: 14px 50px !important;
-            background-color: var(--bg-panel);
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            border-bottom: 1px solid var(--border) !important;
+            background-color: #fafafa;
         }
 
         .ql-container.ql-snow {
             border: none !important;
-            font-family: var(--font-ui) !important;
-            font-size: 16px !important;
-            color: var(--text-main) !important;
-            flex: 1;
-            margin-top: 25px;
+            height: 300px;
+            font-size: 16px;
         }
 
-        .ql-editor {
-            padding: 0 !important;
-            line-height: 1.8;
-        }
-
-        /* Listados */
-        .listado-cabecera {
-            padding: 45px 50px 25px 50px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-        }
-
-        .listado-titulo {
-            font-family: var(--font-title);
-            font-size: 28px;
-            font-weight: 500;
-            color: var(--text-main);
-        }
-
-        .listado-contenido {
-            flex: 1;
-            overflow-y: auto;
-            padding: 30px 50px;
-            background-color: var(--bg-main);
-        }
-
-        .tarjeta-articulo {
-            background-color: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radio);
-            padding: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            cursor: pointer;
-            transition: var(--transicion);
-        }
-
-        .tarjeta-articulo:hover {
-            border-color: var(--text-main);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        }
-
-        .articulo-meta-titulo {
-            font-family: var(--font-title);
-            font-size: 18px;
-            font-weight: 500;
-            color: var(--text-main);
-            margin-bottom: 4px;
-        }
-
-        .articulo-meta-detalles {
-            font-size: 12px;
-            color: var(--text-muted);
-            display: flex;
-            gap: 20px;
-        }
-
-        .estado-badge {
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            padding: 3px 8px;
-            border-radius: 4px;
+        /* Botón Subir Imagen */
+        .btn-upload-image {
             display: inline-flex;
             align-items: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .badge-draft { background-color: var(--bg-main); color: var(--text-muted); }
-        .badge-live { background-color: #e8f5e9; color: var(--exito); border-color: #c8e6c9; }
-        .badge-schedule { background-color: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
-        .badge-trash { background-color: #ffebee; color: var(--peligro); border-color: #ffcdd2; }
-
-        /* Panel Lateral Derecho */
-        .panel-derecho {
-            width: 350px;
-            background-color: var(--bg-main);
-            overflow-y: auto !important;
-            padding: 30px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            transition: var(--transicion);
-            max-height: 100vh; 
-        }
-
-        .tarjeta-widget {
-            background-color: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radio);
-        }
-
-        .tarjeta-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .tarjeta-titulo {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
             gap: 8px;
-        }
-
-        .tarjeta-contenido {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .tarjeta-contenido.oculto {
-            display: none;
-        }
-
-        /* Formularios */
-        .form-grupo {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .form-label {
-            font-size: 11px;
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 10px 18px;
+            font-size: 14px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: background 0.2s;
         }
 
-        .form-control {
-            width: 100%;
-            padding: 10px 14px;
-            font-size: 13.5px;
-            background-color: var(--bg-main);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            border-radius: var(--radio);
-            outline: none;
-            transition: var(--transicion);
+        .btn-upload-image:hover {
+            background-color: #e4e4e4;
+            border-color: #999;
         }
 
-        .form-control:focus {
-            border-color: var(--text-main);
-            background-color: var(--bg-panel);
-        }
-
-        .stats-grid {
+        /* Grid Categorías */
+        .categories-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
+            margin-bottom: 15px;
         }
 
-        .stat-box {
-            background-color: var(--bg-main);
-            padding: 14px;
-            border-radius: var(--radio);
-            border: 1px solid var(--border-color);
-            text-align: center;
-        }
-
-        .stat-val {
-            font-family: var(--font-title);
-            font-size: 20px;
-            font-weight: 500;
-            color: var(--text-main);
-        }
-
-        .stat-lbl {
-            font-size: 10px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        .widget-acciones {
+        .checkbox-label {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
+            align-items: center;
+            gap: 10px;
+            font-weight: normal;
+            cursor: pointer;
+            padding: 10px;
+            background: #fafafa;
+            border: 1px solid #eef0f4;
+            border-radius: 6px;
+            transition: background 0.2s;
         }
 
-        .widget-acciones .btn {
-            width: 100%;
-            justify-content: flex-start;
+        .checkbox-label:hover {
+            background: #f0f0f0;
         }
 
-        /* Toasts y Modales */
-        .toast-contenedor {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 100;
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* Añadir Categoría */
+        .custom-category-box {
             display: flex;
-            flex-direction: column;
             gap: 10px;
         }
 
-        .toast {
-            background-color: var(--bg-panel);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
+        .btn-add-category {
+            background-color: #333333;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-add-category:hover {
+            background-color: #555555;
+        }
+
+        /* Acciones del Formulario */
+        .actions-box {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .btn-publish {
+            flex: 2;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-publish:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-cancel-edit {
+            flex: 1;
+            background-color: #7f8c8d;
+            color: white;
+            border: none;
             padding: 14px 20px;
-            border-radius: var(--radio);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: none; /* Solo visible al editar */
+        }
+
+        .btn-cancel-edit:hover {
+            background-color: #95a5a6;
+        }
+
+        .btn-publish:active {
+            transform: scale(0.98);
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
             font-weight: 500;
-            min-width: 300px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
         }
 
-        /* Variantes de Toast */
-        .toast.exito {
-            border-left: 4px solid var(--exito);
-        }
-        .toast.error {
-            border-left: 4px solid var(--peligro);
-        }
-        .toast.info {
-            border-left: 4px solid #1565c0;
+        .status.success {
+            display: block;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(28, 28, 28, 0.4);
-            backdrop-filter: blur(4px);
-            z-index: 90;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
+        .status.error {
+            display: block;
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
-        .modal-overlay.activo {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal {
-            background-color: var(--bg-panel);
-            border-radius: var(--radio);
-            border: 1px solid var(--border-color);
-            max-width: 750px;
-            width: 90%;
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-header {
-            padding: 20px 30px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .modal-header h3 {
-            font-family: var(--font-title);
-            font-size: 20px;
-            font-weight: 500;
-        }
-
-        .modal-body {
-            padding: 30px;
-            overflow-y: auto;
-            line-height: 1.8;
-        }
-
-        .modal-footer {
-            padding: 20px 30px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-        }
-
-        @media (max-width: 1024px) {
-            .panel-derecho {
-                position: fixed;
-                right: 0; top: 0;
-                height: 100vh;
-                z-index: 30;
-                transform: translateX(100%);
-                border-left: 1px solid var(--border-color);
-            }
-            .panel-derecho.abierto { transform: translateX(0); }
+        .status.loading {
+            display: block;
+            background-color: #e2e3e5;
+            color: #383d41;
+            border: 1px solid #d6d8db;
         }
     </style>
 </head>
-<body data-theme="light">
+<body>
 
-    <main class="contenedor-principal">
-        
-        <aside class="menu-lateral" id="menu-lateral">
-            <div>
-                <div class="sidebar-header">
-                    <div class="logo-container-astroup">
-                        <img src="https://www.astroup.es/assets/astroup-logo-CqTw9D0p.png" alt="Astroup Logo">
-                    </div>
-                </div>
-
-                <div class="nav-grupo">
-                    <div class="nav-item activo" data-seccion="nuevo">
-                        <i class="fa-solid fa-pen-to-square"></i> Nuevo artículo
-                    </div>
-                    <div class="nav-item" data-seccion="borradores">
-                        <i class="fa-solid fa-file-lines"></i> Borradores
-                    </div>
-                    <div class="nav-item" data-seccion="publicados">
-                        <i class="fa-solid fa-circle-check"></i> Publicados
-                    </div>
-                    <div class="nav-item" data-seccion="programados">
-                        <i class="fa-solid fa-clock"></i> Programados
-                    </div>
-                    <div class="nav-item" data-seccion="papelera">
-                        <i class="fa-solid fa-trash-can"></i> Papelera
-                    </div>
-                    <div class="nav-item" data-seccion="configuracion">
-                        <i class="fa-solid fa-gear"></i> Configuración API
-                    </div>
-                </div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Artículos Blogger</h2>
+            <p>Selecciona uno para editarlo</p>
+            <button class="btn-refresh-sidebar" onclick="cargarArticulosPublicados()">
+                🔄 Actualizar lista
+            </button>
+        </div>
+        <div class="articles-list" id="articles-sidebar-list">
+            <div style="text-align: center; color: #bdc3c7; padding: 20px; font-size: 13px;">
+                Cargando artículos...
             </div>
+        </div>
+    </div>
 
-            <div class="sidebar-footer">
-                <div class="footer-fila-botones">
-                    <button class="btn btn-sidebar-publicar" id="btn-publicar-top">
-                        <i class="fa-solid fa-paper-plane"></i> Publicar en Web
-                    </button>
-                    <button class="btn btn-sidebar-volver" id="btn-volver-atras" onclick="history.back()" title="Volver atrás">
-                        <i class="fa-solid fa-arrow-left"></i> Volver atrás
-                    </button>
-                </div>
-                <div class="footer-acciones-iconos">
-                    <button class="btn btn-icono-oscuro" id="btn-tema" title="Cambiar Tema">
-                        <i class="fa-solid fa-moon"></i>
-                    </button>
-                    <button class="btn btn-icono-oscuro" id="btn-lateral-toggle" title="Configuraciones adicionales">
-                        <i class="fa-solid fa-sliders"></i>
-                    </button>
-                </div>
-            </div>
-        </aside>
-
-        <section class="zona-central">
+    <div class="main-content">
+        <div class="container">
+            <h1>
+                <span id="form-action-title">Nuevo Artículo</span>
+                <span id="mode-badge" class="badge-mode">Modo Creador</span>
+            </h1>
             
-            <div id="seccion-nuevo" class="vista-seccion activa">
-                <div class="editor-cabecera">
-                    <input type="text" id="articulo-titulo" class="input-titulo" placeholder="Título del artículo..." autocomplete="off">
-                </div>
-                <div id="toolbar-quill"></div>
-                <div class="editor-contenedor">
+            <div class="form-group">
+                <label for="post-title">Título del artículo</label>
+                <input type="text" id="post-title" placeholder="Ej: Las 5 novedades de tecnología">
+            </div>
+
+            <div class="form-group">
+                <label>Contenido del artículo</label>
+                
+                <button type="button" class="btn-upload-image" onclick="triggerSubirImagen()">
+                    📷 Subir Imagen desde el Ordenador
+                </button>
+                <input type="file" id="file-uploader" accept="image/*" style="display: none;" onchange="procesarImagenSubida(event)">
+
+                <div class="editor-wrapper">
                     <div id="editor-wysiwyg"></div>
                 </div>
             </div>
 
-            <div id="seccion-borradores" class="vista-seccion">
-                <div class="listado-cabecera">
-                    <h2 class="listado-titulo">Mis Borradores</h2>
-                </div>
-                <div class="listado-contenido">
-                    <div class="grid-articulos" id="contenedor-borradores"></div>
-                </div>
-            </div>
-
-            <div id="seccion-publicados" class="vista-seccion">
-                <div class="listado-cabecera">
-                    <h2 class="listado-titulo">Artículos Publicados</h2>
-                    <span style="font-size: 12px; color: var(--text-muted);">Gestionado mediante el servidor seguro de Vercel</span>
-                </div>
-                <div class="listado-contenido">
-                    <div class="grid-articulos" id="contenedor-publicados"></div>
-                </div>
-            </div>
-
-            <div id="seccion-programados" class="vista-seccion">
-                <div class="listado-cabecera">
-                    <h2 class="listado-titulo">Artículos Programados</h2>
-                </div>
-                <div class="listado-contenido">
-                    <div class="grid-articulos" id="contenedor-programados"></div>
+            <div class="form-group">
+                <label>Selecciona las Categorías</label>
+                <div class="categories-grid" id="categories-container">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="categoria" value="Criptomonedas"> Criptomonedas
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="categoria" value="Finanzas"> Finanzas
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="categoria" value="Mercados"> Mercados
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="categoria" value="Tecnologia"> Tecnología
+                    </label>
                 </div>
             </div>
 
-            <div id="seccion-papelera" class="vista-seccion">
-                <div class="listado-cabecera">
-                    <h2 class="listado-titulo">Papelera de Reciclaje</h2>
-                    <button class="btn btn-peligro" id="btn-vaciar-papelera"><i class="fa-solid fa-circle-minus"></i> Vaciar Papelera</button>
-                </div>
-                <div class="listado-contenido">
-                    <div class="grid-articulos" id="contenedor-papelera"></div>
+            <div class="form-group">
+                <label for="new-category-input">Crear y añadir una categoría nueva</label>
+                <div class="custom-category-box">
+                    <input type="text" id="new-category-input" placeholder="Escribe un nombre (Ej: Emprendimiento)">
+                    <button type="button" class="btn-add-category" onclick="crearNuevaCategoria()">Añadir</button>
                 </div>
             </div>
 
-            <div id="seccion-configuracion" class="vista-seccion">
-                <div class="listado-cabecera">
-                    <h2 class="listado-titulo">Configuración de Integración Blogger</h2>
-                </div>
-                <div class="listado-contenido">
-                    <div class="config-form" style="max-width: 600px; display: flex; flex-direction: column; gap: 16px;">
-                        <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">
-                            <strong>Nota de seguridad:</strong> El sistema de publicación ha sido migrado al Backend de Vercel. 
-                            Las credenciales críticas (Client Secret, Refresh Token y Blog ID) ahora se leen de forma 100% segura mediante las variables de entorno de tu proyecto en el panel de Vercel para evitar su exposición.
-                        </p>
-                        <div class="form-grupo">
-                            <label class="form-label">Client ID de Google API</label>
-                            <input type="text" class="form-control" id="cfg-client-id">
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label">API Key de Blogger (Frontend opcional)</label>
-                            <input type="password" class="form-control" id="cfg-api-key">
-                        </div>
-                        <div class="form-grupo">
-                            <label class="form-label">Blog ID (Blogger)</label>
-                            <input type="text" class="form-control" id="cfg-blog-id">
-                        </div>
-                        <button class="btn btn-primario" id="btn-guardar-config" style="align-self: flex-start; margin-top: 10px;">
-                            <i class="fa-solid fa-floppy-disk"></i> Guardar Credenciales Locales
-                        </button>
-                    </div>
-                </div>
+            <div class="actions-box">
+                <button id="btn-cancel-edit" class="btn-cancel-edit" onclick="desactivarModoEdicion()">Cancelar</button>
+                <button id="btn-publish" class="btn-publish" onclick="publicarArticulo()">Publicar Entrada</button>
             </div>
 
-        </section>
-
-        <aside class="panel-derecho" id="panel-derecho">
-            
-            <div class="tarjeta-widget">
-                <div class="tarjeta-header" onclick="toggleTarjeta(this)">
-                    <span class="tarjeta-titulo"><i class="fa-solid fa-bolt"></i> Acciones</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </div>
-                <div class="tarjeta-contenido">
-                    <div class="widget-acciones">
-                        <button class="btn btn-primario" id="btn-blogger-publicar"><i class="fa-solid fa-cloud-arrow-up"></i> Publicar en Blogger</button>
-                        <button class="btn" id="btn-guardar-local"><i class="fa-solid fa-floppy-disk"></i> Guardar borrador</button>
-                        <button class="btn" id="btn-vista-previa"><i class="fa-solid fa-eye"></i> Vista previa</button>
-                        <button class="btn" id="btn-duplicar"><i class="fa-solid fa-copy"></i> Duplicar artículo</button>
-                        <button class="btn btn-peligro" id="btn-eliminar-articulo"><i class="fa-solid fa-trash"></i> Eliminar artículo</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta-widget">
-                <div class="tarjeta-header" onclick="toggleTarjeta(this)">
-                    <span class="tarjeta-titulo"><i class="fa-brands fa-blogger"></i> Metadatos Blogger</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </div>
-                <div class="tarjeta-contenido">
-                    <div class="form-grupo">
-                        <label class="form-label">Estado de Publicación</label>
-                        <select class="form-control" id="blogger-estado">
-                            <option value="live" selected>Publicado inmediatamente</option>
-                            <option value="draft">Borrador interno</option>
-                            <option value="schedule">Programado</option>
-                        </select>
-                    </div>
-                    <div class="form-grupo" id="grupo-fecha" style="display:none;">
-                        <label class="form-label">Fecha y Hora de Programación</label>
-                        <input type="datetime-local" class="form-control" id="blogger-fecha">
-                    </div>
-                    <div class="form-grupo">
-                        <label class="form-label">Etiquetas (Separadas por comas)</label>
-                        <input type="text" class="form-control" id="blogger-etiquetas" placeholder="finanzas, mercados, economía">
-                    </div>
-                    <div class="form-grupo">
-                        <label class="form-label">Imagen Destacada (URL)</label>
-                        <input type="url" class="form-control" id="blogger-imagen" placeholder="https://ejemplo.com/imagen.jpg">
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta-widget">
-                <div class="tarjeta-header" onclick="toggleTarjeta(this)">
-                    <span class="tarjeta-titulo"><i class="fa-solid fa-magnifying-glass"></i> Configuración SEO</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </div>
-                <div class="tarjeta-contenido">
-                    <div class="form-grupo">
-                        <label class="form-label">Meta Descripción</label>
-                        <textarea class="form-control" id="seo-descripcion" rows="3" placeholder="Descripción resumida para buscadores (Google)..." style="resize:none;"></textarea>
-                    </div>
-                    <div class="form-grupo">
-                        <label class="form-label">Palabras Clave SEO (Keywords)</label>
-                        <input type="text" class="form-control" id="seo-keywords" placeholder="economía, bolsa, finanzas liberales">
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta-widget">
-                <div class="tarjeta-header" onclick="toggleTarjeta(this)">
-                    <span class="tarjeta-titulo"><i class="fa-solid fa-chart-simple"></i> Análisis de Lectura</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </div>
-                <div class="tarjeta-contenido">
-                    <div class="stats-grid">
-                        <div class="stat-box">
-                            <div class="stat-val" id="stat-palabras">0</div>
-                            <div class="stat-lbl">Palabras</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-val" id="stat-caracteres">0</div>
-                            <div class="stat-lbl">Caract.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </aside>
-    </main>
-
-    <div class="toast-contenedor" id="toast-contenedor"></div>
-
-    <div class="modal-overlay" id="modal-preview-overlay">
-        <div class="modal">
-            <div class="modal-header">
-                <h3>Vista Previa de la Entrada</h3>
-                <button class="btn btn-icono" onclick="cerrarModal('modal-preview-overlay')"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-body" id="preview-modal-cuerpo"></div>
-            <div class="modal-footer">
-                <button class="btn" onclick="cerrarModal('modal-preview-overlay')">Cerrar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-delete-overlay">
-        <div class="modal">
-            <div class="modal-header">
-                <h3>Mover a la papelera</h3>
-            </div>
-            <div class="modal-body">
-                <p>¿Estás seguro de que deseas enviar este artículo a la papelera?</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" onclick="cerrarModal('modal-delete-overlay')">Cancelar</button>
-                <button class="btn btn-peligro" id="btn-confirmar-eliminar">Eliminar</button>
-            </div>
+            <div id="status-message" class="status"></div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-
     <script>
-        /* ==========================================================================
-           BASE DE DATOS Y CONFIGURACIÓN LOCAL (Sincronizada)
-           ========================================================================== */
-        let DB = {
-            articulos: [],
-            config: {
-                clientId: '4233142660-roq2gcboids59g8oc2rpghfjgr8qgch5.apps.googleusercontent.com',
-                apiKey: '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',
-                blogId: '1205081332135096231'
-            },
-            ultimoIdEditado: null 
-        };
-
-        let idArticuloActual = null;
-        let idBloggerReal = null;
-        let quill = null;
-
-        function cargarDB() {
-            const strDB = localStorage.getItem('cms_economia_db');
-            if (strDB) {
-                try {
-                    const parsed = JSON.parse(strDB);
-                    if (parsed.articulos) DB.articulos = parsed.articulos;
-                    if (parsed.config && parsed.config.clientId) DB.config = parsed.config;
-                    if (parsed.ultimoIdEditado) DB.ultimoIdEditado = parsed.ultimoIdEditado;
-                } catch(e) {
-                    console.error(e);
-                }
-            }
-            guardarDB();
-        }
-
-        function guardarDB() {
-            DB.ultimoIdEditado = idArticuloActual;
-            localStorage.setItem('cms_economia_db', JSON.stringify(DB));
-        }
+        let quill;
+        // Almacenará la lista de artículos cargados
+        let listaArticulos = []; 
+        // Lleva el control de si estamos editando un artículo existente
+        let articuloEnEdicionId = null; 
 
         document.addEventListener('DOMContentLoaded', () => {
-            cargarDB();
-            inicializarEditorQuill();
-            inicializarManejadoresEventos();
-            configurarManejadorTemas();
-            iniciarAutoGuardado();
-            inyectarCredencialesEnPantalla();
-            renderizarListadosDeSecciones();
-
-            if (DB.ultimoIdEditado) {
-                const encontrado = DB.articulos.find(a => a.id === DB.ultimoIdEditado);
-                if (encontrado && !encontrado.eliminado) {
-                    editarArticulo(DB.ultimoIdEditado);
-                }
-            }
-        });
-
-        function inicializarEditorQuill() {
+            // Inicializar Quill
             quill = new Quill('#editor-wysiwyg', {
-                modules: { 
+                modules: {
                     toolbar: [
-                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                        [{ 'font': [] }, { 'size': [] }],
-                        ['bold', 'italic', 'underline', 'strike'], 
-                        [{ 'color': [] }, { 'background': [] }],          
-                        [{ 'script': 'sub'}, { 'script': 'super' }],      
-                        [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
-                        [{ 'indent': '-1'}, { 'indent': '+1' }],          
-                        [{ 'direction': 'rtl' }, { 'align': [] }],        
-                        ['blockquote', 'code-block'],
-                        ['link', 'image', 'video', 'formula'],             
-                        ['clean']                                         
-                    ] 
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link'],
+                        ['clean']
+                    ]
                 },
-                placeholder: 'Escribe tu próxima gran columna aquí con todas las herramientas...',
+                placeholder: 'Escribe aquí el cuerpo del artículo...',
                 theme: 'snow'
             });
-            quill.on('text-change', ejecutarAnalisisMetricas);
-            const barraAutogenerada = document.querySelector('.ql-toolbar');
-            if(barraAutogenerada) document.getElementById('toolbar-quill').appendChild(barraAutogenerada);
+
+            // Cargar categorías guardadas en LocalStorage
+            cargarCategoriasPersonalizadas();
+            // Cargar lista de artículos en el sidebar
+            cargarArticulosPublicados();
+        });
+
+        /* ==========================================================================
+           LÓGICA PARA SUBIR IMÁGENES AL EDITOR
+           ========================================================================== */
+        function triggerSubirImagen() {
+            document.getElementById('file-uploader').click();
         }
 
-        function inicializarManejadoresEventos() {
-            document.getElementById('blogger-estado').addEventListener('change', (e) => {
-                document.getElementById('grupo-fecha').style.display = e.target.value === 'schedule' ? 'flex' : 'none';
-            });
+        function procesarImagenSubida(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-            document.getElementById('btn-guardar-local').addEventListener('click', () => {
-                document.getElementById('blogger-estado').value = 'draft';
-                document.getElementById('grupo-fecha').style.display = 'none';
-                guardarArticuloActual(true);
-            });
-            
-            document.getElementById('btn-vista-previa').addEventListener('click', abrirModalVistaPrevia);
-            document.getElementById('btn-eliminar-articulo').addEventListener('click', clickEliminarArticulo);
-            document.getElementById('btn-confirmar-eliminar').addEventListener('click', confirmarMoverAPapelera);
-            document.getElementById('btn-duplicar').addEventListener('click', duplicarArticuloActual);
-            document.getElementById('btn-vaciar-papelera').addEventListener('click', vaciarPapeleraCompletamente);
-            document.getElementById('btn-guardar-config').addEventListener('click', guardarCredencialesAPI);
-            
-            // Ambos botones ahora llaman directamente al nuevo flujo serverless
-            document.getElementById('btn-blogger-publicar').addEventListener('click', subirArticuloABloggerServerless);
-            document.getElementById('btn-publicar-top').addEventListener('click', subirArticuloABloggerServerless);
-
-            document.getElementById('btn-lateral-toggle').addEventListener('click', () => {
-                document.getElementById('panel-derecho').classList.toggle('abierto');
-            });
-
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const seccionID = this.getAttribute('data-seccion');
-                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('activo'));
-                    this.classList.add('activo');
-                    document.querySelectorAll('.vista-seccion').forEach(vista => vista.classList.remove('activa'));
-                    const vistaDestino = document.getElementById(`seccion-${seccionID}`);
-                    if (vistaDestino) vistaDestino.classList.add('activa');
-                    if (seccionID !== 'nuevo') renderizarListadosDeSecciones();
-                });
-            });
-        }
-
-        function guardarArticuloActual(mostrarAviso = false) {
-            const titulo = document.getElementById('articulo-titulo').value.trim();
-            const html = quill.getSemanticHTML();
-            if(!titulo && html === '<p></p>') return;
-
-            const articuloData = {
-                id: idArticuloActual || 'art_' + Date.now(),
-                idBloggerReal: idBloggerReal,
-                titulo: titulo || 'Artículo sin título',
-                contenidoHtml: html,
-                bloggerEstado: document.getElementById('blogger-estado').value,
-                bloggerFecha: document.getElementById('blogger-fecha').value,
-                bloggerEtiquetas: document.getElementById('blogger-etiquetas').value,
-                bloggerImagen: document.getElementById('blogger-imagen').value,
-                seoDescripcion: document.getElementById('seo-descripcion').value,
-                seoKeywords: document.getElementById('seo-keywords').value,
-                fechaModificacion: new Date().toISOString(),
-                eliminado: false
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Image = e.target.result;
+                const range = quill.getSelection(true);
+                quill.insertEmbed(range.index, 'image', base64Image);
+                quill.setSelection(range.index + 1);
             };
-
-            const index = DB.articulos.findIndex(a => a.id === articuloData.id);
-            if (index !== -1) {
-                articuloData.eliminado = DB.articulos[index].eliminado;
-                DB.articulos[index] = articuloData;
-            } else {
-                DB.articulos.push(articuloData);
-            }
-
-            idArticuloActual = articuloData.id;
-            guardarDB();
-            if (mostrarAviso) mostrarToast('Memoria local actualizada.', 'exito');
-        }
-
-        function editarArticulo(id) {
-            const art = DB.articulos.find(a => a.id === id);
-            if (!art) return;
-
-            idArticuloActual = art.id;
-            idBloggerReal = art.idBloggerReal || null;
-            
-            document.getElementById('articulo-titulo').value = art.titulo;
-            quill.clipboard.dangerouslyPasteHTML(art.contenidoHtml);
-            document.getElementById('blogger-estado').value = art.bloggerEstado || 'live';
-            document.getElementById('blogger-fecha').value = art.bloggerFecha || '';
-            document.getElementById('blogger-etiquetas').value = art.bloggerEtiquetas || '';
-            document.getElementById('blogger-imagen').value = art.bloggerImagen || '';
-            document.getElementById('seo-descripcion').value = art.seoDescripcion || '';
-            document.getElementById('seo-keywords').value = art.seoKeywords || '';
-
-            document.getElementById('grupo-fecha').style.display = art.bloggerEstado === 'schedule' ? 'flex' : 'none';
-
-            guardarDB();
-
-            const navNuevo = document.querySelector('.nav-item[data-seccion="nuevo"]');
-            if (navNuevo) navNuevo.click();
-        }
-
-        function restaurarArticulo(id) {
-            const art = DB.articulos.find(a => a.id === id);
-            if (art) { 
-                art.eliminado = false; 
-                guardarDB(); 
-                renderizarListadosDeSecciones(); 
-                mostrarToast('Artículo restaurado con éxito.', 'exito'); 
-            }
-        }
-
-        function clickEliminarArticulo() {
-            if(!idArticuloActual) { mostrarToast('Editor vacío.', 'error'); return; }
-            abrirModal('modal-delete-overlay');
-        }
-
-        function confirmarMoverAPapelera() {
-            if (idArticuloActual) {
-                const index = DB.articulos.findIndex(a => a.id === idArticuloActual);
-                if (index !== -1) { DB.articulos[index].eliminado = true; guardarDB(); }
-                limpiarEditorCompletamente();
-            }
-            cerrarModal('modal-delete-overlay');
-            renderizarListadosDeSecciones();
-        }
-
-        function duplicarArticuloActual() {
-            idArticuloActual = null;
-            idBloggerReal = null;
-            document.getElementById('articulo-titulo').value += ' (Copia)';
-            guardarArticuloActual(true);
-        }
-
-        function vaciarPapeleraCompletamente() {
-            DB.articulos = DB.articulos.filter(a => !a.eliminado);
-            guardarDB();
-            renderizarListadosDeSecciones();
-            mostrarToast('Papelera vaciada correctamente.', 'exito');
-        }
-
-        function limpiarEditorCompletamente() {
-            idArticuloActual = null;
-            idBloggerReal = null;
-            document.getElementById('articulo-titulo').value = '';
-            quill.setText('');
-            document.getElementById('blogger-etiquetas').value = '';
-            document.getElementById('blogger-imagen').value = '';
-            document.getElementById('seo-descripcion').value = '';
-            document.getElementById('seo-keywords').value = '';
-            guardarDB();
+            reader.readAsDataURL(file);
+            event.target.value = "";
         }
 
         /* ==========================================================================
-           NUEVO SISTEMA DE PUBLICACIÓN SERVERLESS (Eliminado OAuth del Frontend)
+           LÓGICA DE CATEGORÍAS PERSONALIZADAS Y LOCALSTORAGE
            ========================================================================== */
-        async function subirArticuloABloggerServerless() {
-            const titulo = document.getElementById('articulo-titulo').value.trim() || 'Sin título';
-            let html = quill.getSemanticHTML();
+        function obtenerCategoriasDesdeStorage() {
+            const guardadas = localStorage.getItem('blogger_custom_categories_list');
+            return guardadas ? JSON.parse(guardadas) : [];
+        }
 
-            // Sabor editorial: inyectar la imagen de cabecera si existe una configurada
-            const imgUrl = document.getElementById('blogger-imagen').value.trim();
-            if(imgUrl) {
-                html = `<img src="${imgUrl}" style="width:100%; max-height:450px; object-fit:cover; border-radius:4px;" /><br><br>` + html;
+        function cargarCategoriasPersonalizadas() {
+            const customCats = obtenerCategoriasDesdeStorage();
+            customCats.forEach(cat => {
+                dibujarCasillaCategoria(cat, false);
+            });
+        }
+
+        function crearNuevaCategoria() {
+            const input = document.getElementById('new-category-input');
+            const valor = input.value.trim();
+
+            if (!valor) return;
+
+            const categoriasExistentes = Array.from(document.querySelectorAll('input[name="categoria"]'))
+                .map(cb => cb.value.toLowerCase());
+
+            if (categoriasExistentes.includes(valor.toLowerCase())) {
+                alert("Esta categoría ya existe en la lista.");
+                input.value = "";
+                return;
             }
 
-            const tags = document.getElementById('blogger-etiquetas').value.split(',').map(t => t.trim()).filter(t => t.length > 0);
-            const estado = document.getElementById('blogger-estado').value;
+            dibujarCasillaCategoria(valor, true);
 
-            // Construir el cuerpo "post" idéntico esperado por la API de Blogger
-            const payload = {
-                kind: "blogger#post",
-                title: titulo,
-                content: html,
-                labels: tags
-            };
+            const guardadas = obtenerCategoriasDesdeStorage();
+            guardadas.push(valor);
+            localStorage.setItem('blogger_custom_categories_list', JSON.stringify(guardadas));
 
-            const esDraftUrlParam = estado === 'draft' ? 'true' : 'false';
-            if(estado === 'schedule' && document.getElementById('blogger-fecha').value) {
-                payload.published = new Date(document.getElementById('blogger-fecha').value).toISOString();
-            }
+            input.value = "";
+        }
 
-            mostrarToast('Conectando de forma segura con Vercel API...', 'info');
+        function dibujarCasillaCategoria(nombre, marcada = false) {
+            const container = document.getElementById('categories-container');
+            const label = document.createElement('label');
+            label.className = 'checkbox-label';
+            label.innerHTML = `
+                <input type="checkbox" name="categoria" value="${nombre}" ${marcada ? 'checked' : ''}> ${nombre}
+            `;
+            container.appendChild(label);
+        }
+
+        /* ==========================================================================
+           LÓGICA PARA CONTROLAR LA LISTA LATERAL (SIDEBAR) Y LA EDICIÓN
+           ========================================================================== */
+        
+        // Carga los artículos desde la API (GET /api/publish)
+        async function cargarArticulosPublicados() {
+            const sidebarList = document.getElementById('articles-sidebar-list');
+            sidebarList.innerHTML = '<div style="text-align: center; color: #bdc3c7; padding: 20px; font-size: 13px;">Cargando...</div>';
 
             try {
+                const response = await fetch("/api/publish");
+                if (response.ok) {
+                    listaArticulos = await response.json();
+                    renderizarSidebar();
+                } else {
+                    usarArticulosFallback("No se pudo obtener la lista remota.");
+                }
+            } catch (error) {
+                console.error("Error cargando artículos remotos:", error);
+                usarArticulosFallback("Error de red.");
+            }
+        }
+
+        function usarArticulosFallback(razon) {
+            const guardadosLocales = localStorage.getItem('blogger_local_backup_posts');
+            listaArticulos = guardadosLocales ? JSON.parse(guardadosLocales) : [];
+            renderizarSidebar();
+        }
+
+        function renderizarSidebar() {
+            const sidebarList = document.getElementById('articles-sidebar-list');
+            sidebarList.innerHTML = '';
+
+            if (listaArticulos.length === 0) {
+                sidebarList.innerHTML = `
+                    <div style="text-align: center; color: #bdc3c7; padding: 20px; font-size: 13px;">
+                        No hay artículos publicados aún.
+                    </div>`;
+                return;
+            }
+
+            listaArticulos.forEach((articulo, index) => {
+                const item = document.createElement('div');
+                const idArticulo = articulo.id || `idx-${index}`;
+                
+                item.className = `article-item ${articuloEnEdicionId === idArticulo ? 'active' : ''}`;
+                item.onclick = () => cargarArticuloEnFormulario(idArticulo);
+
+                const etiquetasTxt = articulo.labels && articulo.labels.length > 0 
+                    ? articulo.labels.join(', ') 
+                    : 'Sin etiquetas';
+
+                item.innerHTML = `
+                    <div class="article-item-title">${articulo.title}</div>
+                    <div class="article-item-tags">🏷️ ${etiquetasTxt}</div>
+                `;
+                sidebarList.appendChild(item);
+            });
+        }
+
+        // Carga el artículo seleccionado en el panel derecho de edición
+        function cargarArticuloEnFormulario(id) {
+            articuloEnEdicionId = id;
+            
+            const articulo = listaArticulos.find((art, index) => {
+                const artId = art.id || `idx-${index}`;
+                return artId === id;
+            });
+
+            if (!articulo) return;
+
+            // Cambiar textos visuales del modo
+            document.getElementById('form-action-title').textContent = "Editar Artículo";
+            const badge = document.getElementById('mode-badge');
+            badge.textContent = "Modo Edición";
+            badge.className = "badge-mode edit";
+            document.getElementById('btn-publish').textContent = "Guardar Cambios";
+            document.getElementById('btn-cancel-edit').style.display = "block";
+
+            // Rellenar campos
+            document.getElementById('post-title').value = articulo.title;
+            quill.root.innerHTML = articulo.content;
+
+            // Desmarcar todas las categorías primero
+            document.querySelectorAll('input[name="categoria"]').forEach(cb => cb.checked = false);
+
+            // Marcar las categorías correspondientes al artículo
+            if (articulo.labels) {
+                articulo.labels.forEach(etiqueta => {
+                    const checkboxExistente = Array.from(document.querySelectorAll('input[name="categoria"]'))
+                        .find(cb => cb.value.toLowerCase() === etiqueta.toLowerCase());
+
+                    if (checkboxExistente) {
+                        checkboxExistente.checked = true;
+                    } else {
+                        dibujarCasillaCategoria(etiqueta, true);
+                    }
+                });
+            }
+
+            document.querySelectorAll('.article-item').forEach(item => item.classList.remove('active'));
+            renderizarSidebar();
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function desactivarModoEdicion() {
+            articuloEnEdicionId = null;
+
+            document.getElementById('form-action-title').textContent = "Nuevo Artículo";
+            const badge = document.getElementById('mode-badge');
+            badge.textContent = "Modo Creador";
+            badge.className = "badge-mode";
+            document.getElementById('btn-publish').textContent = "Publicar Entrada";
+            document.getElementById('btn-cancel-edit').style.display = "none";
+
+            document.getElementById('post-title').value = "";
+            quill.setText("");
+            document.querySelectorAll('input[name="categoria"]').forEach(cb => cb.checked = false);
+
+            renderizarSidebar();
+        }
+
+        /* ==========================================================================
+           PUBLICACIÓN Y GUARDADO DE CAMBIOS (API CORREGIDA)
+           ========================================================================== */
+        async function publicarArticulo() {
+            const titleInput = document.getElementById("post-title");
+            const btnPublish = document.getElementById("btn-publish");
+
+            const titulo = titleInput.value.trim();
+            const contenidoHtml = quill.root.innerHTML; 
+            
+            if (!titulo || contenidoHtml === '<p><br></p>' || contenidoHtml === '') {
+                showStatus("Por favor, rellena el título y el contenido.", "error");
+                return;
+            }
+
+            // Recoger categorías seleccionadas
+            const etiquetas = [];
+            const checkboxes = document.querySelectorAll('input[name="categoria"]:checked');
+            checkboxes.forEach(cb => {
+                etiquetas.push(cb.value);
+            });
+
+            // Creamos el objeto exacto de Blogger
+            const post = {
+                kind: "blogger#post",
+                title: titulo,
+                content: contenidoHtml,
+                labels: etiquetas
+            };
+
+            // CONFIGURACIÓN DE EDICIÓN CORRECTA:
+            // Si estamos editando, añadimos el ID y un flag de actualización para que tu API de Vercel
+            // sepa que debe hacer un PUT a Blogger en lugar de un POST para crear.
+            if (articuloEnEdicionId) {
+                post.id = articuloEnEdicionId;
+                post.isUpdate = true; // Flag auxiliar que ayuda a diferenciar en tu Backend de Vercel
+                showStatus("Guardando cambios en el artículo...", "loading");
+            } else {
+                showStatus("Publicando nuevo artículo en Blogger...", "loading");
+            }
+            
+            btnPublish.disabled = true;
+
+            try {
+                // Hacemos el POST a tu endpoint de Vercel
                 const response = await fetch("/api/publish", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({
-                        idBloggerReal: idBloggerReal,
-                        payload: payload,
-                        esDraftUrlParam: esDraftUrlParam
-                    })
+                    body: JSON.stringify(post)
                 });
 
                 const result = await response.json();
 
                 if (response.ok) {
-                    idBloggerReal = result.id;
-                    guardarArticuloActual();
-                    mostrarToast('¡Publicado con éxito mediante backend seguro!', 'exito');
+                    showStatus(articuloEnEdicionId ? "¡Cambios guardados con éxito!" : "¡Artículo publicado con éxito!", "success");
+                    
+                    // Sincronizar con el backup local
+                    guardarEnBackupLocal(result.post || post);
+
+                    // Restablecer el formulario y refrescar lista lateral
+                    desactivarModoEdicion();
+                    cargarArticulosPublicados();
                 } else {
-                    mostrarToast('Error al publicar: ' + (result.error || 'Ver consola'), 'error');
-                    console.error("Detalles del fallo devuelto por el servidor:", result);
+                    showStatus("Error al procesar: " + (result.error || "Detalles en consola"), "error");
+                    console.error("Detalle del error del servidor:", result);
                 }
             } catch (error) {
-                mostrarToast('Error crítico de red al conectar con /api/publish', 'error');
-                console.error("Error en la llamada Fetch:", error);
+                showStatus("Error de red. Cambios guardados en memoria local de respaldo.", "error");
+                console.error("Error de petición:", error);
+
+                // En caso de fallo de red, guardamos los cambios de forma local para no perder el trabajo del cliente
+                guardarEnBackupLocal(post);
+                desactivarModoEdicion();
+                renderizarSidebar();
+            } finally {
+                btnPublish.disabled = false;
             }
         }
 
-        function renderizarListadosDeSecciones() {
-            const contenedores = {
-                borradores: document.getElementById('contenedor-borradores'),
-                publicados: document.getElementById('contenedor-publicados'),
-                programados: document.getElementById('contenedor-programados'),
-                papelera: document.getElementById('contenedor-papelera')
-            };
-            Object.values(contenedores).forEach(c => { if(c) c.innerHTML = ''; });
+        // Función de copia local auxiliar (Evita duplicar en la barra lateral al editar)
+        function guardarEnBackupLocal(articulo) {
+            const guardados = localStorage.getItem('blogger_local_backup_posts');
+            let list = guardados ? JSON.parse(guardados) : [];
 
-            const activos = DB.articulos.filter(a => !a.eliminado);
-            const eliminados = DB.articulos.filter(a => a.eliminado);
-
-            construirGrid(activos.filter(a => a.bloggerEstado === 'draft'), contenedores.borradores, 'draft');
-            construirGrid(activos.filter(a => a.bloggerEstado === 'live'), contenedores.publicados, 'live');
-            construirGrid(activos.filter(a => a.bloggerEstado === 'schedule'), contenedores.programados, 'schedule');
-            construirGrid(eliminados, contenedores.papelera, 'trash');
-        }
-
-        function construirGrid(articulos, contenedor, tipo) {
-            if (!contenedor) return;
-            if (articulos.length === 0) {
-                contenedor.innerHTML = `<div style="text-align:center; padding: 50px 0; color: var(--text-muted); font-size: 14px;">Bandeja vacía</div>`;
-                return;
-            }
-
-            articulos.forEach(art => {
-                const tarjeta = document.createElement('div');
-                tarjeta.className = 'tarjeta-articulo';
-                
-                if (tipo !== 'trash') {
-                    tarjeta.addEventListener('click', (e) => {
-                        if (e.target.closest('.btn') || e.target.closest('i')) return;
-                        editarArticulo(art.id);
-                    });
+            if (articuloEnEdicionId) {
+                // Al editar, buscamos el elemento con el ID en edición y lo sobreescribimos en lugar de añadir uno nuevo
+                list = list.map(art => {
+                    const artId = art.id || `idx-${list.indexOf(art)}`;
+                    if (artId === articuloEnEdicionId) {
+                        return { ...art, title: articulo.title, content: articulo.content, labels: articulo.labels };
+                    }
+                    return art;
+                });
+            } else {
+                // Al crear, insertamos al principio de la lista
+                if (!articulo.id) {
+                    articulo.id = `local-${Date.now()}`;
                 }
-
-                tarjeta.innerHTML = `
-                    <div class="articulo-info">
-                        <div class="articulo-meta-titulo">${art.titulo}</div>
-                        <div class="articulo-meta-detalles">
-                            ${art.idBloggerReal ? `<span><i class="fa-solid fa-cloud"></i> Sincronizado</span>` : ''}
-                            <span class="estado-badge badge-${tipo}">${tipo === 'draft' ? 'Borrador' : tipo === 'live' ? 'Publicado' : tipo === 'schedule' ? 'Programado' : 'Papelera'}</span>
-                        </div>
-                    </div>
-                    <div class="articulo-acciones-rapidas">
-                        ${tipo === 'trash' ? `<button class="btn" onclick="restaurarArticulo('${art.id}')"><i class="fa-solid fa-rotate-left"></i></button>` : `<button class="btn" onclick="editarArticulo('${art.id}')"><i class="fa-solid fa-pen"></i></button>`}
-                    </div>
-                `;
-                contenedor.appendChild(tarjeta);
-            });
+                list.unshift(articulo);
+            }
+            localStorage.setItem('blogger_local_backup_posts', JSON.stringify(list));
         }
 
-        function inyectarCredencialesEnPantalla() {
-            document.getElementById('cfg-client-id').value = DB.config.clientId;
-            document.getElementById('cfg-api-key').value = DB.config.apiKey;
-            document.getElementById('cfg-blog-id').value = DB.config.blogId;
-        }
-
-        function guardarCredencialesAPI() {
-            DB.config.clientId = document.getElementById('cfg-client-id').value.trim();
-            DB.config.apiKey = document.getElementById('cfg-api-key').value.trim();
-            DB.config.blogId = document.getElementById('cfg-blog-id').value.trim();
-            guardarDB();
-            mostrarToast('Credenciales locales actualizadas.', 'exito');
-        }
-
-        function toggleTarjeta(header) {
-            header.nextElementSibling.classList.toggle('oculto');
-        }
-
-        function configurarManejadorTemas() {
-            document.getElementById('btn-tema').addEventListener('click', () => {
-                const tema = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-                document.body.setAttribute('data-theme', tema);
-            });
-        }
-
-        function ejecutarAnalisisMetricas() {
-            if(!quill) return;
-            const txt = quill.getText().trim();
-            document.getElementById('stat-palabras').textContent = txt.split(/\s+/).filter(p => p.length > 0).length;
-            document.getElementById('stat-caracteres').textContent = txt.length === 1 && txt === '\n' ? 0 : txt.length;
-        }
-
-        function iniciarAutoGuardado() {
-            setInterval(() => { guardarArticuloActual(false); }, 15000);
-        }
-
-        function mostrarToast(msg, tipo = 'info') {
-            const cont = document.getElementById('toast-contenedor');
-            const t = document.createElement('div');
-            t.className = `toast ${tipo}`;
-            t.innerHTML = `<i class="fa-solid fa-circle-info"></i> <span>${msg}</span>`;
-            cont.appendChild(t);
-            setTimeout(() => t.remove(), 4000);
-        }
-
-        function abrirModal(id) { document.getElementById(id).classList.add('activo'); }
-        function cerrarModal(id) { document.getElementById(id).classList.remove('activo'); }
-
-        function abrirModalVistaPrevia() {
-            document.getElementById('preview-modal-cuerpo').innerHTML = `<h1 style="font-family: var(--font-title); font-size:32px;">${document.getElementById('articulo-titulo').value}</h1><br>` + quill.getSemanticHTML();
-            abrirModal('modal-preview-overlay');
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById("status-message");
+            statusDiv.className = "status " + type;
+            statusDiv.textContent = message;
         }
     </script>
 </body>
