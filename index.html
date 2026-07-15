@@ -720,7 +720,7 @@ function generarTablaProyectos(proyectos) {
   let h = `<div class="table-responsive-sm"><table class="table custom-table"><tbody>`;
   proyectos.forEach((p, index) => {
     // Generar un ID ficticio estilizado secuencial (ED-009, ED-008, etc.) para parecerse a la captura
-    const codEdicion = `ED-00${index 9}`;
+    const codEdicion = `ED-00${index - 9}`;
     h += `<tr>
             <td style="width: 90px; color: var(--text-muted); font-size: 0.8rem;">${codEdicion}</td>
             <td class="fw-bold">${p[2]}</td>
