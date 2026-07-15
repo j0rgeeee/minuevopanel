@@ -947,12 +947,17 @@
                 try {
                     const parsed = JSON.parse(strDB);
                     if (parsed.articulos) DB.articulos = parsed.articulos;
-                    if (parsed.config && parsed.config.clientId) DB.config = parsed.config;
+                    if (parsed.config && parsed.config.clientId) {
+                        DB.config = parsed.config;
+                    } else {
+                        guardarDB();
+                    }
                 } catch(e) {
-                    console.error(e);
+                    console.error("Fallo al parsear DB", e);
                 }
+            } else {
+                guardarDB();
             }
-            guardarDB();
         }
 
         function guardarDB() {
