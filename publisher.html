@@ -1210,16 +1210,19 @@
             });
         }
 function subirArticuloABlogger(accessToken) {
-    const activeBlogId = '1205081332135096231';
+    const activeBlogId = DB.config.blogId;
     const titulo = document.getElementById('articulo-titulo').value.trim() || 'Sin título';
     let html = quill.getSemanticHTML();
 
     const imgUrl = document.getElementById('blogger-imagen').value.trim();
-    if(imgUrl) html = `<img src="${imgUrl}" style="width:100%; max-height:450px; object-fit:cover; border-radius:4px;" /><br><br>` + html;
+    if(imgUrl) {
+        html = `<img src="${imgUrl}" style="width:100%; max-height:450px; object-fit:cover; border-radius:4px;" /><br><br>` + html;
+    }
 
     const tags = document.getElementById('blogger-etiquetas').value.split(',').map(t => t.trim()).filter(t => t.length > 0);
     const estado = document.getElementById('blogger-estado').value;
 
+    // Construcción del Payload
     const payload = {
         kind: "blogger#post",
         blog: { id: activeBlogId },
@@ -1233,39 +1236,45 @@ function subirArticuloABlogger(accessToken) {
         payload.published = new Date(document.getElementById('blogger-fecha').value).toISOString();
     }
 
-    // CORRECCIÓN: Quitamos la barra '/' final de 'posts'
+    // Limpiamos la URL base quitando la barra final conflictiva
     let url = `https://www.googleapis.com/blogger/v3/blogs/${activeBlogId}/posts`;
     let metodo = 'POST';
 
     if(idBloggerReal) {
-        // Si editamos, agregamos la barra '/' y el ID del post
-        url += '/' + idBloggerReal;
+        // Para actualizaciones, añadimos el ID a la URL y obligatoriamente al payload
+        url += `/${idBloggerReal}`;
+        payload.id = idBloggerReal;
         metodo = 'PUT';
     } else {
-        // Si es nuevo, agregamos el parámetro sin barra diagonal previa
+        // Para posts nuevos
         url += `?isDraft=${esDraftUrlParam}`;
     }
 
     fetch(url, {
         method: metodo,
-        headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        headers: { 
+            'Authorization': `Bearer ${accessToken}`, 
+            'Content-Type': 'application/json' 
+        },
         body: JSON.stringify(payload)
     })
     .then(res => {
+        // Validamos si la respuesta del servidor es correcta antes de procesar el JSON
         if (!res.ok) {
-            // Esto te ayudará a ver en la consola exactamente qué error devuelve Google si algo falla
-            return res.json().then(err => { throw new Error(JSON.stringify(err)) });
+            return res.json().then(err => { 
+                throw new Error(err.error?.message || 'Error en la API de Blogger'); 
+            });
         }
         return res.json();
     })
     .then(data => {
         idBloggerReal = data.id;
         guardarArticuloActual();
-        mostrarToast('Publicado con éxito.', 'exito');
+        mostrarToast('¡Publicado con éxito en Blogger!', 'exito');
     })
     .catch((error) => {
         console.error("Error al publicar:", error);
-        mostrarToast('Fallo en publicación web.', 'error');
+        mostrarToast(`Fallo en publicación: ${error.message}`, 'error');
     });
 }
             let esDraftUrlParam = estado === 'draft' ? 'true' : 'false';
